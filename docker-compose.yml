@@ -1,0 +1,17 @@
+
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elastic_query_builder
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8002:8002"  # FastAPI
+    command: >
+      uvicorn main:app --host 0.0.0.0 --port 8002

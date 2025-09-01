@@ -1,0 +1,17 @@
+# Core dependencies
+requests
+pydantic
+elasticsearch==8.17.0
+python-dateutil
+flask             
+fastapi           
+uvicorn
+pytest
+python-dotenv
+aiofiles
+oracledb
+jinja2
+python-multipart
+httpx
+litellm
+python-dotenv
