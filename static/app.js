@@ -8211,20 +8211,91 @@ async function runDataLoad() {
             body: formData
         });
         const result = await response.json();
+        const modalEl = document.getElementById('dataLoadModal');
         if (result.success) {
             showAlert(`Loaded ${result.indexed} records into ${indexName}`, 'success');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            }
+            showDataPreview(result.oracle_data, result.elastic_data);
         } else {
             showAlert('Data load failed: ' + (result.error || 'Unknown error'), 'danger');
-        }
-        const modalEl = document.getElementById('dataLoadModal');
-        if (modalEl) {
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
         }
     } catch (error) {
         showAlert('Data load failed: ' + error.message, 'danger');
     }
 }
+
+// State and functions for data preview modal
+const dataPreviewState = { oracle: [], elastic: [], page: 1, pageSize: 10 };
+
+function showDataPreview(oracleData, elasticData) {
+    dataPreviewState.oracle = oracleData || [];
+    dataPreviewState.elastic = elasticData || [];
+    dataPreviewState.page = 1;
+    renderDataPreviewPage();
+    const modalEl = document.getElementById('dataPreviewModal');
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+}
+
+function renderDataPreviewPage() {
+    const { oracle, elastic, page, pageSize } = dataPreviewState;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const oracleSlice = oracle.slice(start, end);
+    const elasticSlice = elastic.slice(start, end);
+
+    const oHead = document.getElementById('oraclePreviewHead');
+    const eHead = document.getElementById('elasticPreviewHead');
+    const oBody = document.getElementById('oraclePreviewBody');
+    const eBody = document.getElementById('elasticPreviewBody');
+
+    if (oHead) oHead.innerHTML = buildTableHeader(oracle[0]);
+    if (eHead) eHead.innerHTML = buildTableHeader(elastic[0]);
+    if (oBody) oBody.innerHTML = buildTableRows(oracleSlice);
+    if (eBody) eBody.innerHTML = buildTableRows(elasticSlice);
+
+    const totalPages = Math.max(
+        Math.ceil(oracle.length / pageSize),
+        Math.ceil(elastic.length / pageSize)
+    );
+    const pagination = document.getElementById('dataPreviewPagination');
+    if (pagination) {
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<li class="page-item ${i === page ? 'active' : ''}"><a href="#" class="page-link" data-page="${i}">${i}</a></li>`;
+        }
+        pagination.innerHTML = html;
+    }
+}
+
+function buildTableHeader(sample) {
+    if (!sample) return '';
+    return '<tr>' + Object.keys(sample).map(k => `<th>${k}</th>`).join('') + '</tr>';
+}
+
+function buildTableRows(rows) {
+    return rows.map(row => '<tr>' +
+        Object.values(row).map(v => `<td>${escapeHtml(typeof v === 'object' ? JSON.stringify(v) : v)}</td>`).join('') +
+        '</tr>').join('');
+}
+
+function escapeHtml(text) {
+    if (text === undefined || text === null) return '';
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+document.getElementById('dataPreviewPagination')?.addEventListener('click', (e) => {
+    if (e.target.dataset.page) {
+        e.preventDefault();
+        dataPreviewState.page = parseInt(e.target.dataset.page);
+        renderDataPreviewPage();
+    }
+});
 
 // 🆕 NEW FUNCTION: Show workflow completion
 function showWorkflowCompletion(result) {

@@ -137,7 +137,8 @@ class OracleElasticsearchMapper:
             'total_records': len(oracle_data),
             'converted_records': len(converted_data),
             'bulk_result': bulk_result,
-            'field_structure': self.field_structure
+            'field_structure': self.field_structure,
+            'converted_data': converted_data
         }
 
     def get_mapping_report(self) -> str:
@@ -443,3 +444,4 @@ def map_oracle_to_elastic(oracle_columns: List[str],
         'bulk_result': bulk_result,
         'field_structure': mapper.field_structure
     }
+
