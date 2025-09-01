@@ -3010,6 +3010,45 @@
     </div>
 </div>
 
+<!-- Data Preview Modal -->
+<div class="modal fade" id="dataPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Data Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Oracle Data</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead id="oraclePreviewHead"></thead>
+                                <tbody id="oraclePreviewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Elasticsearch Data</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead id="elasticPreviewHead"></thead>
+                                <tbody id="elasticPreviewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <nav>
+                    <ul class="pagination mb-0" id="dataPreviewPagination"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Enhanced Field Configuration Modal with Nested Field Support -->
 <div class="modal fade" id="fieldConfigModal" tabindex="-1">
     <div class="modal-dialog modal-lg">

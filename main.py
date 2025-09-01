@@ -1037,7 +1037,12 @@ async def oracle_data_load(
         print("\nBulk Index Result:")
         print(json.dumps(result, indent=2))
 
-        return {"success": True, "indexed": len(records)}
+        return {
+            "success": True,
+            "indexed": len(records),
+            "oracle_data": records,
+            "elastic_data": result.get("converted_data", [])
+        }
 
     except Exception as e:
         return JSONResponse({"success": False, "error": str(e)}, status_code=500)
